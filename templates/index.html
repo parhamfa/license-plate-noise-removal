@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>License Plate Noise Removal with Threshold Variants</title>
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+  />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body>
+  <div class="container my-4">
+    <h1 class="mb-3">License Plate Noise Removal + Manual/Otsu/Adaptive Threshold</h1>
+
+    <!-- Upload Form -->
+    <div class="mb-3">
+      <label for="file-input" class="form-label">Upload Images</label>
+      <input
+        class="form-control"
+        type="file"
+        id="file-input"
+        name="files[]"
+        multiple
+        accept=".png,.jpg,.jpeg,.bmp"
+      />
+      <button id="upload-button" class="btn btn-primary mt-2">Upload</button>
+    </div>
+
+    <div class="row">
+      <!-- Left Column: Image Display + Nav Buttons -->
+      <div class="col-md-6">
+        <div id="image-container" class="text-center border p-3">
+          <p>No image loaded.</p>
+        </div>
+
+        <div class="d-flex justify-content-between mt-2">
+          <button class="btn btn-secondary" id="prev-button" disabled>Previous</button>
+          <button class="btn btn-secondary" id="next-button" disabled>Next</button>
+        </div>
+      </div>
+
+      <!-- Right Column: Single Filter + Multi-Filter Pipeline -->
+      <div class="col-md-6">
+        <h5>Single-Filter</h5>
+        <div class="mb-3 d-flex align-items-end">
+          <select id="filter-select" class="form-select me-2" style="max-width: 250px;">
+            <option value="None">None</option>
+            <option value="Gaussian Blur">Gaussian Blur</option>
+            <option value="Median Blur">Median Blur</option>
+            <option value="Bilateral Filter">Bilateral Filter</option>
+            <option value="Manual Threshold">Manual Threshold</option>
+            <option value="Otsu Threshold">Otsu Threshold</option>
+            <option value="Adaptive Threshold">Adaptive Threshold</option>
+            <option value="Non-Local Means">Non-Local Means</option>
+            <option value="CLAHE">CLAHE</option>
+            <option value="Gamma Correction">Gamma Correction</option>
+            <option value="Unsharp Mask">Unsharp Mask</option>
+            <option value="Auto Enhance">Auto Enhance</option>
+          </select>
+          <button id="apply-filter-button" class="btn btn-info">Preview Filter</button>
+        </div>
+
+        <div id="param-panel" class="border p-2 mb-4">
+          <!-- Manual Threshold -->
+          <div id="param-manual-threshold" style="display: none;">
+            <label>Threshold Value (0-255):</label>
+            <input type="number" id="manual-thr-value" value="128" min="0" max="255" />
+          </div>
+
+          <!-- Otsu Threshold (no params) -->
+          <div id="param-otsu-threshold" style="display: none;">
+            <p>Otsu has no manual parameters.</p>
+          </div>
+
+          <!-- Adaptive Threshold -->
+          <div id="param-adaptive-threshold" style="display: none;">
+            <label>Block Size (odd):</label>
+            <input type="number" id="adaptive-blocksize" value="11" step="2" min="3" max="99" />
+            <label>C:</label>
+            <input type="number" id="adaptive-c" value="2" step="1" min="-10" max="10" />
+          </div>
+
+          <!-- hStrength, clipLimit, gamma, unsharp, etc. if needed -->
+          <div id="param-hStrength" style="display: none;">
+            <label>Non-Local Means Strength (h):</label>
+            <input type="number" id="hStrength-value" value="10" step="1" min="1" max="30" />
+          </div>
+          <div id="param-clipLimit" style="display: none;">
+            <label>CLAHE Clip Limit:</label>
+            <input type="number" id="clipLimit-value" value="2.0" step="0.1" min="0.1" max="10" />
+          </div>
+          <div id="param-gamma" style="display: none;">
+            <label>Gamma:</label>
+            <input type="number" id="gamma-value" value="1.5" step="0.1" min="0.1" max="5.0" />
+          </div>
+          <div id="param-unsharp" style="display: none;">
+            <label>Unsharp Sigma:</label>
+            <input type="number" id="unsharp-sigma" value="3.0" step="0.1" min="0.1" max="10" />
+            <label>Strength:</label>
+            <input type="number" id="unsharp-strength" value="1.5" step="0.1" min="0.1" max="5" />
+          </div>
+        </div>
+
+        <!-- MULTI-FILTER PIPELINE -->
+        <h5>Multi-Filter Pipeline</h5>
+        <div class="mb-2 d-flex align-items-end">
+          <select id="pipeline-filter-select" class="form-select me-2" style="max-width: 250px;">
+            <option value="Manual Threshold">Manual Threshold</option>
+            <option value="Otsu Threshold">Otsu Threshold</option>
+            <option value="Adaptive Threshold">Adaptive Threshold</option>
+            <option value="Gaussian Blur">Gaussian Blur</option>
+            <option value="Median Blur">Median Blur</option>
+            <option value="Bilateral Filter">Bilateral Filter</option>
+            <option value="Non-Local Means">Non-Local Means</option>
+            <option value="CLAHE">CLAHE</option>
+            <option value="Gamma Correction">Gamma Correction</option>
+            <option value="Unsharp Mask">Unsharp Mask</option>
+          </select>
+          <button class="btn btn-secondary" id="show-pipeline-params">Configure / Show Params</button>
+        </div>
+
+        <div id="pipeline-param-panel" class="border p-2 mb-2" style="display: none;">
+          <!-- Manual Threshold -->
+          <div id="pipeline-param-manual-thr" style="display: none;">
+            <label>Threshold Value (0-255):</label>
+            <input type="number" id="pipeline-manual-thr" value="128" min="0" max="255" />
+          </div>
+
+          <!-- Otsu (no params) -->
+          <div id="pipeline-param-otsu-thr" style="display: none;">
+            <p>No parameters for Otsu.</p>
+          </div>
+
+          <!-- Adaptive Threshold -->
+          <div id="pipeline-param-adaptive-thr" style="display: none;">
+            <label>Block Size (odd):</label>
+            <input type="number" id="pipeline-adaptive-block" value="11" step="2" min="3" max="99" />
+            <label>C:</label>
+            <input type="number" id="pipeline-adaptive-c" value="2" step="1" min="-10" max="10" />
+          </div>
+
+          <!-- Example for others (hStrength, clipLimit, gamma, unsharp) -->
+          <div id="pipeline-param-hStrength" style="display: none;">
+            <label>Non-Local Means (h):</label>
+            <input type="number" id="pipeline-hStrength-val" value="10" step="1" min="1" max="30" />
+          </div>
+          <div id="pipeline-param-clahe" style="display: none;">
+            <label>CLAHE Clip Limit:</label>
+            <input type="number" id="pipeline-clahe-clip" value="2.0" step="0.1" min="0.1" max="10.0" />
+          </div>
+          <div id="pipeline-param-gamma" style="display: none;">
+            <label>Gamma:</label>
+            <input type="number" id="pipeline-gamma-val" value="1.5" step="0.1" min="0.1" max="5.0" />
+          </div>
+          <div id="pipeline-param-unsharp" style="display: none;">
+            <label>Sigma:</label>
+            <input type="number" id="pipeline-unsharp-sigma" value="3.0" step="0.1" min="0.1" max="10.0" />
+            <label>Strength:</label>
+            <input type="number" id="pipeline-unsharp-strength" value="1.5" step="0.1" min="0.1" max="5.0" />
+          </div>
+
+          <button class="btn btn-primary mt-2" id="add-filter-step">Add to Pipeline</button>
+        </div>
+
+        <ul id="pipeline-steps" class="list-group mb-2"></ul>
+        <button id="preview-pipeline-button" class="btn btn-info mb-3">Preview Pipeline</button>
+
+        <button id="confirm-button" class="btn btn-success mb-2" disabled>Confirm</button>
+        <button id="export-button" class="btn btn-warning" disabled>Export Confirmed Images</button>
+
+        <div id="messages" class="mt-3"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- jQuery + Bootstrap -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+  ></script>
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
