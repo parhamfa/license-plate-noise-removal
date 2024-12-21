@@ -1,132 +1,166 @@
-License Plate Noise Removal & Enhancement
-A Flask + OpenCV web application to improve the readability of vehicle license plates under challenging conditions (noise, poor lighting, etc.). Users can apply single filters or build a pipeline of multiple filters (including thresholding, denoising, contrast enhancement, etc.) and then preview and confirm results before exporting.
 
-Table of Contents
-Features
-Technologies Used
-Installation
-Usage
-Project Structure
-Available Filters
-Noise Removal
-Thresholding
-Contrast & Brightness
-Edge Enhancement
-Auto Enhance
-Screenshots
-License
-Features
-Upload Multiple Images: Easily select one or more vehicle images.
-Single Filter Mode: Pick a single filter (e.g., Median Blur) and apply it with optional parameters.
-Pipeline Mode: Stack multiple filters in sequence (e.g. Gamma Correction → Non-Local Means → Otsu Threshold).
-Preview & Confirm: See immediate results in the browser; confirm if the outcome is acceptable.
-Export: Save all confirmed final images to a designated output folder.
-Thresholding: Includes Manual (fixed value), Otsu (auto), and Adaptive threshold methods.
-Technologies Used
-Python 3.x
-Flask (web framework)
-OpenCV (image processing)
-NumPy (array/matrix operations)
-Bootstrap (optional for styling)
-HTML / CSS / JavaScript (front end)
-Installation
-Clone this repository:
+# License Plate Noise Removal
 
-bash
-Copy code
-git clone https://github.com/your-username/your-repo-name.git
-cd your-repo-name
-Install dependencies (preferably in a virtual environment):
+A **Flask + OpenCV** web application to improve readability of vehicle license plates in images with noise, poor lighting, or other challenges. Users can apply **single filters** or **build a filter pipeline**, preview results in real time, and then **export** the final processed images.
 
-bash
-Copy code
-pip install -r requirements.txt
-Make sure you have flask, opencv-python, and numpy in your requirements file.
+**Repo:** [github.com/parhamfa/license-plate-noise-removal](https://github.com/parhamfa/license-plate-noise-removal)
 
-Run the Flask app:
+---
 
-bash
-Copy code
-python app.py
-Open your browser and navigate to:
-http://127.0.0.1:5000/
-(or whatever host/port you have configured)
+## Table of Contents
 
-Usage
-Upload Images:
+- [Overview](#overview)
+- [Features](#features)
+- [Technologies Used](#technologies-used)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Available Filters](#available-filters)
+- [Project Structure](#project-structure)
+- [Screenshots (Optional)](#screenshots-optional)
+- [License (Optional)](#license-optional)
 
-Click Choose Files and select one or more images (JPG, PNG, BMP, etc.).
-Click Upload.
-View & Navigate:
+---
 
-The first image appears in the Image Container.
-Use Previous / Next to switch between uploaded images.
-Single Filter:
+## Overview
 
-Select a filter from the dropdown (e.g., Manual Threshold).
-Adjust parameters (if any), like threshold value.
-Click Preview Filter to see the result.
-If satisfied, click Confirm.
-Multi-Filter Pipeline:
+This application focuses on **noise removal** and **image enhancement** techniques specifically for license plate images. It includes:
 
-Choose a filter from the pipeline dropdown.
-Click Configure / Show Params to reveal its parameter panel.
-Set your desired values, click Add to Pipeline.
-Repeat for more steps if desired.
-Click Preview Pipeline to apply them in sequence.
-Confirm if the final preview is acceptable.
-Export:
+1. Denoising filters (Gaussian, Median, Bilateral, Non-Local Means)  
+2. Thresholding methods (Manual, Otsu, Adaptive)  
+3. Contrast enhancements (CLAHE, Gamma Correction)  
+4. An **edge enhancement** step (Unsharp Mask)  
+5. An **Auto Enhance** pipeline that combines multiple methods automatically.
 
-Once you have confirmed results for some or all images, click Export to save them into an output/ folder.
-Project Structure
-php
-Copy code
-.
-├── app.py                # Flask backend
-├── requirements.txt      # Python dependencies
+---
+
+## Features
+
+1. **Multiple Image Upload**: Select one or more images of license plates.  
+2. **Single Filter Mode**: Choose a single filter, preview its effect, and confirm if you like the result.  
+3. **Pipeline Mode**: Add several filters in sequence (e.g., `Non-Local Means` → `Gamma Correction` → `Otsu Threshold`), then preview the final outcome.  
+4. **Threshold Variants**:  
+   - **Manual** (user-specified threshold value)  
+   - **Otsu** (auto global threshold)  
+   - **Adaptive** (localized threshold)  
+5. **Confirm & Export**: Save finalized images to an `output/` folder for further use (e.g., OCR).
+
+---
+
+## Technologies Used
+
+- **Python 3.x**  
+- **Flask** (web framework)  
+- **OpenCV** (image processing)  
+- **NumPy** (matrix/array operations)  
+- **Bootstrap 5** (optional styling)  
+- **HTML / CSS / JavaScript** (front end)
+
+---
+
+## Installation
+
+1. **Clone this repository**:
+   ```bash
+   git clone https://github.com/parhamfa/license-plate-noise-removal.git
+   cd license-plate-noise-removal
+   ```
+2. **Install dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. **Run the Flask app**:
+   ```bash
+   python app.py
+   ```
+4. **Open** [http://127.0.0.1:5000](http://127.0.0.1:5000/) in your browser.
+
+---
+
+## Usage
+
+1. **Upload Images**  
+   - Click the **Choose Files** button and select your images.  
+   - Click **Upload** to send them to the server.
+
+2. **Navigate Images**  
+   - The first image is displayed immediately.  
+   - Use **Previous** / **Next** to switch between images.
+
+3. **Single Filter**  
+   - From the dropdown, pick a filter (e.g., `Manual Threshold`).  
+   - Adjust parameters if needed (e.g., threshold value).  
+   - Click **Preview Filter** to see the updated image.  
+   - If satisfied, click **Confirm**.
+
+4. **Multi-Filter Pipeline**  
+   - Choose a filter from the **pipeline** dropdown.  
+   - Click **Configure / Show Params**, fill in parameter values.  
+   - Click **Add to Pipeline**.  
+   - Repeat for more filters, if desired.  
+   - Click **Preview Pipeline** to see the final stacked result.  
+   - **Confirm** when it’s good.
+
+5. **Export**  
+   - Click **Export** to save all confirmed images into `output/`.
+
+---
+
+## Available Filters
+
+- **Noise Removal**  
+  - Gaussian Blur  
+  - Median Blur  
+  - Bilateral Filter  
+  - Non-Local Means  
+
+- **Thresholding**  
+  - Manual Threshold (fixed value)  
+  - Otsu Threshold (automatic)  
+  - Adaptive Threshold (localized)  
+
+- **Contrast & Brightness**  
+  - CLAHE (Localized histogram equalization)  
+  - Gamma Correction (Adjust brightness curve)
+
+- **Edge Enhancement**  
+  - Unsharp Mask (sharpen edges)
+
+- **Auto Enhance**  
+  - A built-in pipeline combining multiple filters automatically.
+
+---
+
+## Project Structure
+
+```
+license-plate-noise-removal/
+├── app.py                # Main Flask backend
+├── requirements.txt      # Dependencies
 ├── templates/
-│   └── index.html        # Main HTML page
+│   └── index.html        # Main UI (HTML)
 ├── static/
 │   ├── css/
 │   │   └── style.css     # Basic styling
 │   └── js/
-│       └── script.js     # Front-end JavaScript (AJAX + UI logic)
-├── uploads/              # Temporary folder for uploaded images
-├── output/               # Folder for exported (confirmed) images
+│       └── script.js     # Front-end AJAX & UI logic
+├── uploads/              # Temporary folder for uploads
+├── output/               # Final processed images saved here
 └── README.md             # This file
-app.py contains:
+```
 
-Routes for uploading images, applying filters, pipeline management, etc.
-Filter methods (e.g., thresholding, denoising, gamma correction)
-Global state (for demonstration) storing images, current index, final results.
-templates/index.html:
+---
 
-The main user interface with upload form, filter dropdowns, parameter panels, etc.
-static/js/script.js:
+## Screenshots (Optional)
 
-Uses AJAX to communicate with Flask routes without reloading the page.
-Implements preview, confirm, navigation, and the pipeline logic.
-Available Filters
-Noise Removal
-Gaussian Blur
-Median Blur
-Bilateral Filter
-Non-Local Means
-Thresholding
-Manual Threshold (user sets a fixed value, 0-255)
-Otsu Threshold (automatic global threshold based on image histogram)
-Adaptive Threshold (local threshold for uneven lighting, adjustable block size & constant C)
-Contrast & Brightness
-CLAHE (Contrast-Limited Adaptive Histogram Equalization)
-Gamma Correction (tweak brightness curve)
-Edge Enhancement
-Unsharp Mask (sharpen details by subtracting blurred image from original)
-Auto Enhance
-A predefined pipeline that applies multiple steps in a row (e.g., gamma correction → denoising → unsharp → threshold).
-Screenshots (Optional)
-(Add screenshots or GIFs of your web UI showing an image before/after, filter selection, pipeline preview, etc.)
+*(Include screenshots or GIFs showing various filters, before/after comparisons, etc.)*
 
-License (Optional)
-(Choose a license, e.g., MIT, and place its text here. If this is a private/academic project, you can omit or adjust accordingly.)
+---
 
-Enjoy using the License Plate Noise Removal & Enhancement Web App! Feel free to open an issue or submit pull requests for improvements.
+## License (Optional)
+
+*(Specify a license if desired, e.g., MIT, or leave as-is.)*
+
+---
+
+**Happy filtering!**  
+Feel free to open an issue or pull request if you encounter any problems or have ideas for new filters.
