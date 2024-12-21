@@ -1,0 +1,23 @@
+body {
+  background-color: #f8f9fa;
+}
+
+#image-container img {
+  max-width: 100%;
+  height: auto;
+}
+
+#messages {
+  min-height: 50px;
+}
+
+#messages .alert {
+  margin-bottom: 10px;
+}
+
+/* Some spacing for param panels */
+#param-panel,
+#pipeline-param-panel {
+  background-color: #ffffff;
+  padding: 10px;
+}
