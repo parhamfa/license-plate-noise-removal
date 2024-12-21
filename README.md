@@ -16,8 +16,6 @@ A **Flask + OpenCV** web application to improve readability of vehicle license p
 - [Usage](#usage)
 - [Available Filters](#available-filters)
 - [Project Structure](#project-structure)
-- [Screenshots (Optional)](#screenshots-optional)
-- [License (Optional)](#license-optional)
 
 ---
 
