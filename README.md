@@ -70,9 +70,9 @@ This application focuses on **noise removal** and **image enhancement** techniqu
    ```
 3. **Run the Flask app**:
    ```bash
-   python app.py
+   python main.py
    ```
-4. **Open** [http://127.0.0.1:5000](http://127.0.0.1:5000/) in your browser.
+4. **Open** [http://127.0.0.1:8000](http://127.0.0.1:8000/) in your browser.
 
 ---
 
@@ -147,18 +147,6 @@ license-plate-noise-removal/
 ├── output/               # Final processed images saved here
 └── README.md             # This file
 ```
-
----
-
-## Screenshots (Optional)
-
-*(Include screenshots or GIFs showing various filters, before/after comparisons, etc.)*
-
----
-
-## License (Optional)
-
-*(Specify a license if desired, e.g., MIT, or leave as-is.)*
 
 ---
 
